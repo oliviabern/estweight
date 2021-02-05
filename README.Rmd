@@ -1,0 +1,160 @@
+---
+output: github_document
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "man/figures/README-",
+  out.width = "100%"
+)
+```
+
+# estweight
+
+<!-- badges: start -->
+<!-- badges: end -->
+
+The goal of estweight is to estimate propensity weights for convenience samples using information from a representative sample. The estimated weights are incorporated into propensity-weighted generalized linear models and analytic standard error estimates are reported. When using a logistic propensity weight estimation method, standard errors are derived using a simultaneous estimating equation approach to account for uncertianty from the weight estimation process. Otherwise standard errors are design-based.
+
+Suppose you want to estimate a model $\eta(E[Y]) = X\beta$ where $Y$ is the response, $X$ is a matrix containing covariates and $\eta(\cdot)$ is a link function. However, $Y$ and $X$ were only collected in a convenience sample. Fitting the model directly in the convenience sample may lead to bias from the unrepresentative sampling. Additionally, supppose you have a second dataset that is representative of the target population you want to obtain inference about, but it does not contain both $Y$ and $X$. The represerntative sample can be used to estimate sampling weights for the convenience sample adn these derirved weights can be used to weight the outcome model of interest. This package uses a representative sample to estimate weights for the convenience sample and weight the outcome model of interest using the convenience sample. 
+
+## Installation
+
+You can install the development version of estweight from [GitHub](https://github.com/) with:
+
+``` r
+# install.packages("devtools")
+devtools::install_github("oliviabern/estweight")
+```
+## Example
+
+This is a basic example which shows you how to use a representative sample to estimate propensity weights and fit a weighted GLM for a biased convenience sample. First we will estimate a sample drawn from our reference population. 
+
+```{r}
+library(estweight)
+
+set.seed(10403)
+
+# simulate population
+n.pop = 50000
+X1 = rbinom(n.pop, size = 1, prob = 0.5)
+X2 = rbinom(n.pop, size = 1, prob = .3)
+X3 = rbinom(n.pop, size = 1, prob = .3)
+X4 = rbinom(n.pop, size = 1, prob = .1)
+X5 = rbinom(n.pop, size = 1, prob = .05)
+X6 = rbinom(n.pop, size = 1, prob = .1)
+X7 = rbinom(n.pop, size = 1, prob = .5)
+X8 = rnorm(n.pop, mean = 65, sd = 5)
+
+repsample = data.frame(X1, X2, X3, X4,
+                       X5, X6, X7, X8)
+
+# create helper function
+expit = function(x){exp(x)/(1+exp(x))}
+
+```
+
+Next we generate the known sampling probabilities and corresponding true propensity weight. We also generate the response $Y$. Our goal is to estimate the relationship  $\eta(E[Y]) = \beta_0 + \beta_1X_4 + \beta_2X_5 + \beta_3X_6$. In this simulation, we know $Y$ for subjects in both samples, but in practice we assume $Y$ was only collected in the convenience sample. 
+
+```{r}
+# Calculate probability of being oversampled and true HT weight
+sampprob = expit(.5*(repsample$X1*.3 + repsample$X2*.4 + repsample$X3*.8 +
+                       repsample$X4*2.7 + repsample$X5*.9 + (repsample$X3)*(repsample$X5)*2 +
+                       repsample$X6*.1 + repsample$X6*repsample$X7*1.5 +
+                       -.002*repsample$X8^2 + 8))
+repsample$sampprob = sampprob
+repsample$weight_true = (1/sampprob)/sum(1/sampprob)
+
+# Calculation E(Y) where Y is the response
+repsample$Ey = expit(1 + log(2)*(repsample$X4) + -log(3)*(repsample$X5) + log(2.5)*(repsample$X6) +
+                        -log(2)*sampprob + log(4)*(repsample$X4)*sampprob +
+                        log(4)*(repsample$X5)*sampprob + -log(3)*(repsample$X6)*sampprob)
+```
+
+Now, we draw a  biased convenience sample where each subject is sampled according to their sampling probability and a representative sample where each subject has equal probability of being sampled. Each sample contains $n_{samp} = 500$ observations.  
+
+```{r}
+n.samp = 500
+
+# draw biased sample
+b.samp.id = sample(1:n.pop, n.samp, prob = repsample$sampprob)
+b.samp = repsample[b.samp.id, ]
+
+# draw representative sample
+r.samp.id = sample(1:n.pop, n.samp)
+r.samp = repsample[r.samp.id, ]
+```
+
+Next, we simulate response $Y$ for each subject and create an indicator \code{biased} which is 1 for subjects in the biased sample and 0 otherwise. 
+
+```{r}
+# simulate response
+b.samp$y = rbinom(n.samp,1,b.samp$Ey)
+r.samp$y = rbinom(n.samp,1,r.samp$Ey)
+
+# biased sample indicator
+b.samp$biased = 1; r.samp$biased = 0
+```
+
+We need to manipulate the data into the form required for the \code{convGLM} function. We need to create a stacked dataset that combines the biased and representative samples. They should be stacked vertically and contain a unique subject identifier, \code{ID}, in the first column, the indicator, \code{biased}, should be in the last column, and any covariates collected in both datasets to be used for matching should be in the middle columns. All strings and factors should be of class \code{factor}. Finally, we need to create a response matrix that contains 2 columns, \code{ID} and the response, \code{y}. 
+
+```{r}
+# Combine bisaed and representative samples
+Xcomb = data.frame(ID = 1:(2*n.samp),
+                   rbind(b.samp, r.samp))
+
+# Dataframe to pass to function
+Xfit = Xcomb[,c("ID", paste0("X",1:8), "biased")]
+
+# convert strings and indicators to factors
+convert2factor = paste0("X",1:7)
+for(i in 1:length(convert2factor)){
+  Xfit[,convert2factor[i]] = as.factor(Xfit[,convert2factor[i]])
+}
+
+# get response
+response = Xcomb[Xcomb$biased==1,c("ID","y")]
+```
+
+Use the \code{convGLM} function to fit an propensity-weighted generalized linear model that utilizes logistic-regression estimated weights. 
+
+```{r}
+# formulas for final scientific model
+form.outcome = as.formula(y ~ X4 + X5 + X6)
+
+# fit weighted model using a logistic propensity weight estimation method
+convGLM(data = Xfit, outcome_formula = form.outcome, response = response,
+        weight_model = "logistic", outcome_family = "quasibinomial")
+
+```
+
+Use a random forest propensity weight estimation method instead.
+
+```{r}
+# fit weighted model using a random forest propensity weight estimation method
+convGLM(data = Xfit, outcome_formula = form.outcome, response = response,
+        weight_model = "randomForest", outcome_family = "quasibinomial")
+
+```
+
+Now try a covariate balancing propensity score weight estimation method.
+
+```{r}
+# fit weighted model using a random forest propensity weight estimation method
+convGLM(data = Xfit, outcome_formula = form.outcome, response = response,
+        weight_model = "CBPS", outcome_family = "quasibinomial")
+
+```
+
+Finally, try a entropy balancing weight estimation method.
+
+```{r}
+# fit weighted model using a random forest propensity weight estimation method
+convGLM(data = Xfit, outcome_formula = form.outcome, response = response,
+        weight_model = "entbal", outcome_family = "quasibinomial")
+
+```
