@@ -142,7 +142,7 @@ convGLM = function(data, outcome_formula, response,
   }
 
   ## create dataframe for outcome model
-  data_outcome = subset(cbind(data_use,htweight), biased == 1)
+  data_outcome = subset(cbind(data_use,htweight), data_use$biased == 1)
 
   ## Fit outcome model
   fit_outcome = survey::svyglm(outcome_formula,
