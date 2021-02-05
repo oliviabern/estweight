@@ -3,15 +3,13 @@ Title: Estimates Propensity Weights For Convenience Samples
 Version: 0.0.0.9000
 Authors@R: 
     person(given = "Olivia",
+    middle = "M."
            family = "Bernstein",
            role = c("aut", "cre"),
            email = "obernste@uci.edu",
            comment = c(ORCID = "https://orcid.org/0000-0003-3345-4263"))
-Description: This packages contains functions to estimate propensity weights for a convenience sample 
-using information from a representative sample. The propensity weights are used to weight a GLM for
-the scientific question of inference to obtain more representative inference. 
-License: `use_mit_license()`, `use_gpl3_license()` or friends to
-    pick a license
+Description: Convenience samples are often used to estimate associations but this may lead to unrepresenative estimates. This packages contains functions to estimate propensity weights for a convenience sample using information from a representative sample. The propensity weights are used to weight a GLM for the scientific question of inference to obtain more representative inference. 
+License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
