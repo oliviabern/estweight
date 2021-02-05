@@ -1,13 +1,15 @@
 Package: estweight
-Title: What the Package Does (One Line, Title Case)
+Title: Estimates Propensity Weights For Convenience Samples
 Version: 0.0.0.9000
 Authors@R: 
-    person(given = "First",
-           family = "Last",
+    person(given = "Olivia",
+           family = "Bernstein",
            role = c("aut", "cre"),
-           email = "first.last@example.com",
-           comment = c(ORCID = "YOUR-ORCID-ID"))
-Description: What the package does (one paragraph).
+           email = "obernste@uci.edu",
+           comment = c(ORCID = "https://orcid.org/0000-0003-3345-4263"))
+Description: This packages contains functions to estimate propensity weights for a convenience sample 
+using information from a representative sample. The propensity weights are used to weight a GLM for
+the scientific question of inference to obtain more representative inference. 
 License: `use_mit_license()`, `use_gpl3_license()` or friends to
     pick a license
 Encoding: UTF-8
