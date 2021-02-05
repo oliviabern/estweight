@@ -51,13 +51,13 @@ convGLM = function(data, outcome_formula, response,
     # Model scope includes second order terms
     form_min = as.formula("biased ~ 1")
     form_max = as.formula(paste0("biased ~",paste0(c(cov, paste0("I(",cont_vars,"^2)")),collapse = "+")))
-    fit_min = glm(formula = form_min, family = binomial, data = data_use)
-    forward = step(fit_min,scope=list(lower=form_min,upper=form_max),
+    fit_min = stats::glm(formula = form_min, family = binomial, data = data_use)
+    forward = stats::step(fit_min,scope=list(lower=form_min,upper=form_max),
                    direction="forward", trace = 0)
 
     # fit selected model
     estwt_form = formula(forward)
-    estwt_fit = glm(formula = estwt_form, family = binomial, data = data_use)
+    estwt_fit = stats::glm(formula = estwt_form, family = binomial, data = data_use)
     prob_bias = fitted(estwt_fit, "response")
     htweight_unnorm = (1-prob_bias)/prob_bias
     htweight = htweight_unnorm/sum(htweight_unnorm)
@@ -66,7 +66,7 @@ convGLM = function(data, outcome_formula, response,
 
     form_max = as.formula(paste0("factor(biased) ~",paste0(cov,collapse = "+")))
 
-    fit_rf = randomForest(formula = form_max, data = data_use, type = "classification")
+    fit_rf = randomForest::randomForest(formula = form_max, data = data_use, type = "classification")
 
     prob_bias1 = predict(fit_rf,type =  "prob")[,"1"]
     prob_bias = ifelse(prob_bias1==0,.01,ifelse(prob_bias1==1,.99,prob_bias1)) # deal with est wts of 0 or 1
@@ -75,7 +75,7 @@ convGLM = function(data, outcome_formula, response,
   } else if(weight_model == "CBPS"){
 
     form_max = as.formula(paste0("factor(biased) ~",paste0(c(fact_vars, paste0("poly(",cont_vars,",2)")),collapse = "+")))
-    fit_cbps = CBPS(formula = form_max, data = data_use, ATT = 2) # Representative sample should be the 'treatment' group
+    fit_cbps = CBPS::CBPS(formula = form_max, data = data_use, ATT = 2) # Representative sample should be the 'treatment' group
     prob_bias = 1 - fit_cbps$fitted.values # want prob c2c (not nhanes)
     htweight_unnorm = (1-prob_bias)/prob_bias
     htweight = htweight_unnorm/sum(htweight_unnorm)
@@ -92,7 +92,7 @@ convGLM = function(data, outcome_formula, response,
                        bal_tol = 1e-8,
                        max_iters = 1000,
                        which_z = 0) # this will match covariates to those in NHANES-REP
-    estwts_eb_att = entbal(form_max, data = data_use,
+    estwts_eb_att = entbal::entbal(form_max, data = data_use,
                            eb_pars = eb_pars_att)
 
     htweight = estwts_eb_att$wts
@@ -104,8 +104,8 @@ convGLM = function(data, outcome_formula, response,
   data_outcome = subset(cbind(data_use,htweight), biased == 1)
 
   ## Fit outcome model
-  fit_outcome = svyglm(outcome_formula,
-                       design = svydesign(ids = ~0, weights = data_outcome$htweight, data = data_outcome),
+  fit_outcome = survey::svyglm(outcome_formula,
+                       design = survey::svydesign(ids = ~0, weights = data_outcome$htweight, data = data_outcome),
                        family = outcome_family)
   coef = fit_outcome$coefficients
 
