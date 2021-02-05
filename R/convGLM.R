@@ -1,17 +1,58 @@
+#' Propensity-weighted generalized linear models for convenience samples
+#'
+#' Estimate propensity weights for convenience samples using information from a representative sample.
+#' Fit a generalized model incorporating estimated propensity-weights with analytic standard errors.
+#' When using a logistic propensity weight estimation method, standard errors are derived using a simultaneous estimating equation approach to account for uncertianty from
+#' the weight estimation process. Otherwise standard errors are design-based.
+#'
+#' @param data Combined dataset including the convenience sample and representative sample with a subject
+#' identifier, \code{ID}, in the first column, any covariates needed for matching, and an indicator, \code{biased},
+#' that is 1 for subjects in the biased sample in the last column. Note that all factors in the dataset
+#' should either  be binary or of class factor
+#' @param outcome_formula Model formula for the final outcome model to be fit in the convenience sample.
+#' @param response A matrix containing two columns: \code{ID} and \code{response} which is the response for outcome_formula
+#' @param weight_model Which sampling weight estimation model should be used. Either \code{"logistic"},
+#' \code{"randomForest"}, \code{"CBPS"}, or \code{"entbal"}
+#' @param outcome_family Error distribution and link function to be used in the outcome model (See
+#' \code{family} for details of family function)
+#'
+#' @return \code{convGLM} returns a dataframe containing coefficient estimates and corresponding standard errors
+#' for the outcome model
+#' @export
+#'
+#' @examples
+#' data("mtcars")
+#' repsample = mtcars
+#' n = nrow(repsample)
+#' expit = function(x) {exp(x) / (1 + exp(x))}
+#'
+#' # Calculate probability of being oversampled
+#' repsample$sampprob = expit(.01*(repsample$am*4 + repsample$carb*3
+#' + repsample$drat*.9 -repsample$mpg*repsample$disp*.05 + .002*repsample$hp^2 + 80))
+#'
+#' # draw biased and representative samples
+#' b.samp = repsample[sample(1:n, 500, prob = repsample$sampprob, replace = TRUE), ]
+#' r.samp = repsample[sample(1:n, 500, replace = TRUE), ]
+#'
+#' # Create indicator of biased sample membership
+#' b.samp$biased = 1; r.samp$biased = 0
+#'
+#'# Format data to pass to function
+#'Xcomb = data.frame(ID = 1:(1000), rbind(b.samp, r.samp))
+#'Xfit = Xcomb[,c("ID", colnames(Xcomb)[c(2:8,10:12)], "biased")]
+#'response = Xcomb[Xcomb$biased==1,c("ID","vs")]
+#'colnames(response)[2] = "y"
+#'
+#' # Fit weighted model
+#' convGLM(data = Xfit, outcome_formula = as.formula(y ~ mpg + cyl), response = response,
+#' weight_model = "randomForest",outcome_family = "quasibinomial")
+#'
+#' # Fit unweighted model
+#' glm(vs ~ mpg + cyl, data = Xcomb, subset = (Xcomb$biased == 1), family = binomial)$coef
+#'
 convGLM = function(data, outcome_formula, response,
                    weight_model = "logistic",
                    outcome_family = stats::gaussian){
-
-  # data:            should be the concatonated combination of the biased sample and representative
-  #                  sample with an ID in the first column and an indicator, biased, that is 1
-  #                  for subjects in the biased sample in the last column
-  #                  factors should be of class factor or binary
-  # outcome_formula: and object of class "formula" (or one that can be coerced to that class)
-  #                  as in the glm function
-  # weight_model:    which sampling weight estimation model should be used. Either "logistic",
-  #                  "randomForest", "CBPS", or "entbal"
-  # outcome_family:  Error distribution and link function to be used in the outcome model (See
-  #                  family for details of family function)
 
   # Check weight_model selection
   if(!(weight_model %in% c("logistic", "randomForest", "CBPS","entbal"))){
@@ -112,7 +153,7 @@ convGLM = function(data, outcome_formula, response,
   ## Get analytic variance estimate
   if(weight_model == "logistic"){
 
-    analyticSE = logistic_var(estwt_fit, fit_outcome, biased = data_use$biased)
+    analyticSE = logisticSE(estwt_fit, fit_outcome, biased = data_use$biased)
 
   } else{
     analyticSE = summary(fit_outcome)$coefficients[,2]

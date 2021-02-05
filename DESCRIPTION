@@ -2,8 +2,7 @@ Package: estweight
 Title: Estimates Propensity Weights For Convenience Samples
 Version: 0.0.0.9000
 Authors@R: 
-    person(given = "Olivia",
-    middle = "M."
+    person(given = "Olivia M.",
            family = "Bernstein",
            role = c("aut", "cre"),
            email = "obernste@uci.edu",
