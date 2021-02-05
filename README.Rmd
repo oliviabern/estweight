@@ -120,7 +120,7 @@ for(i in 1:length(convert2factor)){
 response = Xcomb[Xcomb$biased==1,c("ID","y")]
 ```
 
-Use the \code{convGLM} function to fit an propensity-weighted generalized linear model that utilizes logistic-regression estimated weights. 
+Use the \code{convGLM} function to fit an propensity-weighted generalized linear model that utilizes logistic regression estimated weights. 
 
 ```{r}
 # formulas for final scientific model

@@ -149,7 +149,7 @@ response = Xcomb[Xcomb$biased==1,c("ID","y")]
 ```
 
 Use the  function to fit an propensity-weighted generalized linear model
-that utilizes logistic-regression estimated weights.
+that utilizes logistic regression estimated weights.
 
 ``` r
 # formulas for final scientific model
