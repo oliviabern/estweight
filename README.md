@@ -16,19 +16,18 @@ derived using a simultaneous estimating equation approach to account for
 uncertianty from the weight estimation process. Otherwise standard
 errors are design-based.
 
-Suppose you want to estimate a model \(\eta(E[Y]) = X\beta\) where \(Y\)
-is the response, \(X\) is a matrix containing covariates and
-\(\eta(\cdot)\) is a link function. However, \(Y\) and \(X\) were only
-collected in a convenience sample. Fitting the model directly in the
-convenience sample may lead to bias from the unrepresentative sampling.
-Additionally, supppose you have a second dataset that is representative
-of the target population you want to obtain inference about, but it does
-not contain both \(Y\) and \(X\). The represerntative sample can be used
-to estimate sampling weights for the convenience sample adn these
-derirved weights can be used to weight the outcome model of interest.
-This package uses a representative sample to estimate weights for the
-convenience sample and weight the outcome model of interest using the
-convenience sample.
+Suppose you want to estimate a model η(Y) = Xβ where Y is the response,
+X is a matrix containing covariates and η is a link function. However, Y
+and X were only collected in a convenience sample. Fitting the model
+directly in the convenience sample may lead to bias from the
+unrepresentative sampling. Additionally, supppose you have a second
+dataset that is representative of the target population you want to
+obtain inference about, but it does not contain both Y and X. The
+represerntative sample can be used to estimate sampling weights for the
+convenience sample adn these derirved weights can be used to weight the
+outcome model of interest. This package uses a representative sample to
+estimate weights for the convenience sample and weight the outcome model
+of interest using the convenience sample.
 
 ## Installation
 
@@ -71,11 +70,12 @@ expit = function(x){exp(x)/(1+exp(x))}
 ```
 
 Next we generate the known sampling probabilities and corresponding true
-propensity weight. We also generate the response \(Y\). Our goal is to
-estimate the relationship
-\(\eta(E[Y]) = \beta_0 + \beta_1X_4 + \beta_2X_5 + \beta_3X_6\). In this
-simulation, we know \(Y\) for subjects in both samples, but in practice
-we assume \(Y\) was only collected in the convenience sample.
+propensity weight. We also generate the response Y. Our goal is to
+estimate the outcome model of interest, η(Y) = β<sub>0</sub> +
+β<sub>1</sub>X<sub>4</sub> + β<sub>2</sub>X<sub>5</sub> +
+β<sub>3</sub>X<sub>6</sub>. In this simulation, we know Y for subjects
+in both samples, but in practice we assume Y was only collected in the
+convenience sample.
 
 ``` r
 # Calculate probability of being oversampled and true HT weight
@@ -95,7 +95,7 @@ repsample$Ey = expit(1 + log(2)*(repsample$X4) + -log(3)*(repsample$X5) + log(2.
 Now, we draw a biased convenience sample where each subject is sampled
 according to their sampling probability and a representative sample
 where each subject has equal probability of being sampled. Each sample
-contains \(n_{samp} = 500\) observations.
+contains n<sub>samp</sub> = 500 observations.
 
 ``` r
 n.samp = 500
@@ -109,8 +109,8 @@ r.samp.id = sample(1:n.pop, n.samp)
 r.samp = repsample[r.samp.id, ]
 ```
 
-Next, we simulate response \(Y\) for each subject and create an
-indicator  which is 1 for subjects in the biased sample and 0 otherwise.
+Next, we simulate response Y for each subject and create an indicator
+biased which is 1 for subjects in the biased sample and 0 otherwise.
 
 ``` r
 # simulate response
@@ -121,14 +121,15 @@ r.samp$y = rbinom(n.samp,1,r.samp$Ey)
 b.samp$biased = 1; r.samp$biased = 0
 ```
 
-We need to manipulate the data into the form required for the  function.
-We need to create a stacked dataset that combines the biased and
-representative samples. They should be stacked vertically and contain a
-unique subject identifier, , in the first column, the indicator, ,
-should be in the last column, and any covariates collected in both
-datasets to be used for matching should be in the middle columns. All
-strings and factors should be of class . Finally, we need to create a
-response matrix that contains 2 columns,  and the response, .
+We need to manipulate the data into the form required for the
+convGLMfunction. We need to create a stacked dataset that combines the
+biased and representative samples. They should be stacked vertically and
+contain a unique subject identifier, ID}, in the first column, the
+indicator, biased}, should be in the last column, and any covariates
+collected in both datasets to be used for matching should be in the
+middle columns. All strings and factors should be of class factor}.
+Finally, we need to create a response matrix that contains 2 columns,
+ID, and the response, y.
 
 ``` r
 # Combine bisaed and representative samples
@@ -148,8 +149,8 @@ for(i in 1:length(convert2factor)){
 response = Xcomb[Xcomb$biased==1,c("ID","y")]
 ```
 
-Use the  function to fit an propensity-weighted generalized linear model
-that utilizes logistic regression estimated weights.
+Use the convGLM function to fit an propensity-weighted generalized
+linear model that utilizes logistic regression estimated weights.
 
 ``` r
 # formulas for final scientific model
