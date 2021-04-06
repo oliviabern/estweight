@@ -22,7 +22,7 @@ should either  be binary or of class factor}
 
 \item{response}{A matrix containing two columns: \code{ID} and \code{response} which is the response for outcome_formula}
 
-\item{weight_model}{Which sampling weight estimation model should be used. Either \code{"logistic"},
+\item{weight_model}{Which propensity weight estimation model should be used. Either \code{"logistic"},
 \code{"randomForest"}, \code{"CBPS"}, or \code{"entbal"}}
 
 \item{outcome_family}{Error distribution and link function to be used in the outcome model (See
