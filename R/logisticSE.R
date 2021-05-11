@@ -28,7 +28,7 @@ logisticSE = function(estwt_fit, fit_outcome, biased){
   # subset W down to subjects from biased sample
   W = stats::model.matrix(estwt_fit)[as.logical(biased),]
   y_mu = residuals(fit_outcome, type = 'response')
-  I_UT = t(X)%*%(pi*diag(dmu_deta*y_mu/V_mu)%*%W)
+  I_UT = t(X)%*%(pi*diag(deta_dmu*y_mu/V_mu)%*%W)
 
   ## T
   if (is.matrix(estwt_fit$x)){
