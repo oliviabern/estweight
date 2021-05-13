@@ -30,11 +30,6 @@ logisticSE = function(estwt_fit, fit_outcome, biased){
   y_mu = residuals(fit_outcome, type = 'response')
   I_UT = t(X)%*%(pi*diag(dmu_deta*y_mu/V_mu)%*%W)
 
-  ## create I
-  m = nrow(I_TT); p = nrow(I_UU)
-  I = rbind(cbind(I_TT, matrix(0, nrow = m, ncol = p)),
-            cbind(I_UT, I_UU))
-
   ## T
   if (is.matrix(estwt_fit$x)){
     xmat=estwt_fit$x
