@@ -18,17 +18,22 @@ logisticSE = function(estwt_fit, fit_outcome, biased){
   ## I_UU
   mu = stats::fitted(fit_outcome)
   V_mu = (residuals(fit_outcome,"response")/residuals(fit_outcome,"pearson"))^2 #
-  deta_dmu = residuals(fit_outcome,"working")/residuals(fit_outcome,"response")
+  dmu_deta = residuals(fit_outcome,"response")/residuals(fit_outcome,"working")
   X = stats::model.matrix(fit_outcome)
   pi = 1/fit_outcome$survey.design$prob
   pi = pi/sum(pi)*length(pi)
-  I_UU = t(X)%*%(pi*diag(1/V_mu*(deta_dmu)^{-2})%*%X)
+  I_UU = t(X)%*%(pi*diag(1/V_mu*(dmu_deta)^{2})%*%X)
 
   ##  I_UT
   # subset W down to subjects from biased sample
   W = stats::model.matrix(estwt_fit)[as.logical(biased),]
   y_mu = residuals(fit_outcome, type = 'response')
-  I_UT = t(X)%*%(pi*diag(deta_dmu*y_mu/V_mu)%*%W)
+  I_UT = t(X)%*%(pi*diag(dmu_deta*y_mu/V_mu)%*%W)
+
+  ## create I
+  m = nrow(I_TT); p = nrow(I_UU)
+  I = rbind(cbind(I_TT, matrix(0, nrow = m, ncol = p)),
+            cbind(I_UT, I_UU))
 
   ## T
   if (is.matrix(estwt_fit$x)){
@@ -50,8 +55,12 @@ logisticSE = function(estwt_fit, fit_outcome, biased){
   }
   U_score = (stats::residuals(fit_outcome,"working")*fit_outcome$weights*xmat)
 
+  score = cbind(T_score, U_score)
+  scorescoreT = t(score)%*%score
+  diag(solve(I)%*%scorescoreT%*%solve(I))[4:6]
+
   SR = sqrt(diag(solve(I_UU)%*%t(U_score)%*%(U_score)%*%solve(I_UU) -
-                   solve(I_UU)%*%I_UT%*%solve(I_TT)%*%(t(T_score[which(as.logical(biased)),]))%*%((U_score))%*%solve(I_UU)))
+                   solve(I_UU)%*%I_UT%*%solve(I_TT)%*%(t(T_score))%*%((U_score))%*%solve(I_UU)))
 
   return(SR)
 }
