@@ -50,12 +50,14 @@ logisticSE = function(estwt_fit, fit_outcome, biased){
   }
   U_score = (stats::residuals(fit_outcome,"working")*fit_outcome$weights*xmat)
 
-  score = cbind(T_score, U_score)
-  scorescoreT = t(score)%*%score
-  diag(solve(I)%*%scorescoreT%*%solve(I))[4:6]
 
-  SR = sqrt(diag(solve(I_UU)%*%t(U_score)%*%(U_score)%*%solve(I_UU) -
-                   solve(I_UU)%*%I_UT%*%solve(I_TT)%*%(t(T_score))%*%((U_score))%*%solve(I_UU)))
+  # if I_UU or I_TT is singular, return NA
+  check = try(SR <- sqrt(diag(solve(I_UU)%*%t(U_score)%*%(U_score)%*%solve(I_UU) -
+                   solve(I_UU)%*%I_UT%*%solve(I_TT)%*%(t(T_score))%*%((U_score))%*%solve(I_UU))))
+
+  if("try-error" %in% class(check)){
+    SR = rep(NA,nrow(I_UU))
+  }
 
   return(SR)
 }
