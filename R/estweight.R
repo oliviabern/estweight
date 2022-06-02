@@ -10,9 +10,14 @@
 #' \code{"randomForest"}, \code{"CBPS"}, or \code{"entbal"}
 #' @param incl_wts_for_rep A logical value indicating whether propensity weights for
 #' observations from the representative sample should be included in the output.
+#' @param return_model_fit An optional flag which changes the output so that it
+#' returns a list of estimated propensity weights and the model fit. This is useful for downstream
+#' uncertainty estimates. Note that a model fit is only returned if a logistic propensity weight
+#' estimation model is selected (weight_model == "logistic")
 #'
 #' @return \code{estweight} returns a dataframe containing IDs and the corresponding estimated
-#' propensity weights
+#' propensity weights. If the flag return_model_fit == TRUE and the weight_model == "logistic", it instead returns a list where the
+#' first element is the dataframe of IDS and weights and the second element is the model fit.
 #' @export
 #'
 #' @examples
@@ -39,12 +44,19 @@
 #'# Estimate propensity weights
 #'estweight(data = Xfit, weight_model = "logistic")
 estweight = function(data, weight_model = "logistic",
-                     incl_wts_for_rep = FALSE){
+                     incl_wts_for_rep = FALSE,
+                     return_model_fit = FALSE){
 
   # Check inputs
   if(!(weight_model %in% c("logistic", "randomForest", "CBPS","entbal"))){
     warning("Invalid weight_model input. Will use default logistic weight estimation model")
     weight_model = "logistic"
+  }
+
+  # if weight_model != logistic, the model fit can't be returned
+  # so the return_model_fit will be changed to reflect that
+  if(weight_model != "logistic"){
+    return_model_fit = FALSE
   }
 
   cols = colnames(data)
@@ -136,6 +148,12 @@ estweight = function(data, weight_model = "logistic",
     weights = weights[data$biased == 1,]
   }
 
-  return(weights)
+  if(return_model_fit){
+    return(list(weights = weights,
+                estwt_fit = estwt_fit))
+  } else{
+    return(weights)
+  }
+
 
 }
