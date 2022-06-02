@@ -58,9 +58,20 @@ estweight = function(data, weight_model = "logistic",
 
   # Identify covariate names and which are factors
   cov = cols[!(cols%in%c("ID","biased"))]
-  fs = sapply(data[,cov],is.factor)
-  fact_vars = cov[fs]
-  cont_vars = cov[!fs]
+  if(length(cov)==1){
+    fs = is.factor(data[,cov])
+    if(is.factor(data[,cov])){
+      fact_vars = cov
+      cont_vars = NULL
+    } else{
+      fact_vars = NULL
+      cont_vars = cov
+    }
+  } else{
+    fs = sapply(data[,cov],is.factor)
+    fact_vars = cov[fs]
+    cont_vars = cov[!fs]
+  }
 
   ## Estimate selection weights
 
