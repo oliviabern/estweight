@@ -33,10 +33,13 @@ should either  be binary or of class factor}
 for the outcome model
 }
 \description{
-Estimate propensity weights for convenience samples using information from a representative sample.
-Fit a generalized model incorporating estimated propensity-weights with analytic standard errors.
-When using a logistic propensity weight estimation method, standard errors are derived using a simultaneous estimating equation approach to account for uncertianty from
-the weight estimation process. Otherwise standard errors are design-based.
+Estimate propensity weights for convenience samples using information from a
+representative sample. Fit a generalized model incorporating estimated propensity-weights
+with analytic standard errors.When using a logistic propensity weight estimation method,
+standard errors are derived using a simultaneous estimating equation approach to
+account for uncertainty from the weight estimation process. Otherwise standard errors are design-based. More details can be found in our forthcoming paper
+Adjustment for Biased Sampling Using NHANES Derived Propensity Weights by Bernstein et al.
+A preprint can be accessed at: https://arxiv.org/abs/2104.10298
 }
 \examples{
 data("mtcars")

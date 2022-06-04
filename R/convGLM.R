@@ -1,9 +1,12 @@
 #' Propensity-weighted generalized linear models for convenience samples
 #'
-#' Estimate propensity weights for convenience samples using information from a representative sample.
-#' Fit a generalized model incorporating estimated propensity-weights with analytic standard errors.
-#' When using a logistic propensity weight estimation method, standard errors are derived using a simultaneous estimating equation approach to account for uncertianty from
-#' the weight estimation process. Otherwise standard errors are design-based.
+#' Estimate propensity weights for convenience samples using information from a
+#' representative sample. Fit a generalized model incorporating estimated propensity-weights
+#'  with analytic standard errors.When using a logistic propensity weight estimation method,
+#'   standard errors are derived using a simultaneous estimating equation approach to
+#'   account for uncertainty from the weight estimation process. Otherwise standard errors are design-based. More details can be found in our forthcoming paper
+#' Adjustment for Biased Sampling Using NHANES Derived Propensity Weights by Bernstein et al.
+#' A preprint can be accessed at: https://arxiv.org/abs/2104.10298
 #'
 #' @param data Combined dataset including the convenience sample and representative sample with a subject
 #' identifier, \code{ID}, in the first column, any covariates needed for matching, and an indicator, \code{biased},

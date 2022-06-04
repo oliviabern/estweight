@@ -1,7 +1,35 @@
+#' Estimate a causal effect in a convenience sample
+#'
+#' Propensity adjusted causal effects are estimated for convenience samples and
+#' sampling bias is adjusted for. Sampling weights are estimated for the
+#' convenience sample using an auxiliary dataset. The weights are estimated with
+#' logistic regression and stepwise forward selection. The estimated sampling weights
+#' are then used to estimate propensity scores. The propensity scores are estimated
+#' using logistic regression and stepwise selection with quadratic terms and two-way
+#' interactions. The causal effect is estimated with a propensity adjusted GLM that
+#' uses the estimated sampling weights. The estimated causal effect is returned with a
+#' standard error that is estimated using a simultaneous estimating equation that accounts
+#'  for uncertainty from the weight estimating and propensity score estimation process.
+#'  More details can be found in our forthcoming paper Propensity Scores in
+#'  Convenience Samples by Bernstein Morgan et al.
+#'
+#' @param convSamp
+#' @param SRS
+#' @param sampwt_vars
+#' @param PS_vars
+#' @param treatment_var
+#' @param response_var
+#' @param outcome_family
+#'
+#' @return
+#' @export
+#'
+#' @examples
 convPS = function(convSamp, SRS,
                   sampwt_vars, PS_vars,
                   treatment_var, response_var,
                   outcome_family = stats::gaussian){
+
 
   #### check function inputs ####
   # check that the vars in  sampwt_vars, PS_vars, treatment_var, response_var
