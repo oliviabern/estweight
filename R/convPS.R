@@ -1,17 +1,8 @@
 #' Estimate a causal effect in a convenience sample
 #'
 #' Propensity adjusted causal effects are estimated for convenience samples and
-#' sampling bias is adjusted for. Sampling weights are estimated for the
-#' convenience sample using an auxiliary dataset. The weights are estimated with
-#' logistic regression and stepwise forward selection. The estimated sampling weights
-#' are then used to estimate propensity scores. The propensity scores are estimated
-#' using logistic regression and stepwise selection with quadratic terms and two-way
-#' interactions. The causal effect is estimated with a propensity adjusted GLM that
-#' uses the estimated sampling weights. The estimated causal effect is returned with a
-#' standard error that is estimated using a simultaneous estimating equation that accounts
-#'  for uncertainty from the weight estimating and propensity score estimation process.
-#'  More details can be found in our forthcoming paper Propensity Scores in
-#'  Convenience Samples by Bernstein Morgan et al.
+#' sampling bias is adjusted for, with standard errors that accounts for uncertainy
+#' in estimating sampling weights and propensity scores.
 #'
 #' @param convSamp
 #' @param SRS
@@ -23,6 +14,19 @@
 #'
 #' @return
 #' @export
+#'
+#' @details Sampling weights are estimated for the
+#' convenience sample using an auxiliary dataset. The weights are estimated with
+#' logistic regression and stepwise forward selection. The estimated sampling weights
+#' are then used to estimate propensity scores. The propensity scores are estimated
+#' using logistic regression and stepwise selection with quadratic terms and two-way
+#' interactions. The causal effect is estimated with a propensity adjusted GLM that
+#' uses the estimated sampling weights. The estimated causal effect is returned with a
+#' standard error that is estimated using a simultaneous estimating equation that accounts
+#'  for uncertainty from the weight estimating and propensity score estimation process.
+#'
+#'  @references “Causal Inference in Convenience Samples.”
+#'  Bernstein, OM; Vegetabile, BG; Grill, JD; Gillen, DL. Forthcoming.
 #'
 #' @examples
 convPS = function(convSamp, SRS,

@@ -37,9 +37,7 @@ Estimate propensity weights for convenience samples using information from a
 representative sample. Fit a generalized model incorporating estimated propensity-weights
 with analytic standard errors.When using a logistic propensity weight estimation method,
 standard errors are derived using a simultaneous estimating equation approach to
-account for uncertainty from the weight estimation process. Otherwise standard errors are design-based. More details can be found in our forthcoming paper
-Adjustment for Biased Sampling Using NHANES Derived Propensity Weights by Bernstein et al.
-A preprint can be accessed at: https://arxiv.org/abs/2104.10298
+account for uncertainty from the weight estimation process. Otherwise standard errors are design-based.
 }
 \examples{
 data("mtcars")
@@ -71,4 +69,8 @@ weight_model = "randomForest",outcome_family = "quasibinomial")
 # Fit unweighted model
 glm(vs ~ mpg + cyl, data = Xcomb, subset = (Xcomb$biased == 1), family = binomial)$coef
 
+}
+\references{
+“Adjustment for Biased Sampling Using NHANES Derived Propensity Weights.”
+Bernstein, OM; Vegetabile, BG; Salazar, CR; Grill, JD; Gillen, DL. Under Revision \url{https://arxiv.org/abs/2104.10298}
 }

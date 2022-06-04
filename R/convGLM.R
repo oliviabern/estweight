@@ -4,9 +4,8 @@
 #' representative sample. Fit a generalized model incorporating estimated propensity-weights
 #'  with analytic standard errors.When using a logistic propensity weight estimation method,
 #'   standard errors are derived using a simultaneous estimating equation approach to
-#'   account for uncertainty from the weight estimation process. Otherwise standard errors are design-based. More details can be found in our forthcoming paper
-#' Adjustment for Biased Sampling Using NHANES Derived Propensity Weights by Bernstein et al.
-#' A preprint can be accessed at: https://arxiv.org/abs/2104.10298
+#'   account for uncertainty from the weight estimation process. Otherwise standard errors are design-based.
+
 #'
 #' @param data Combined dataset including the convenience sample and representative sample with a subject
 #' identifier, \code{ID}, in the first column, any covariates needed for matching, and an indicator, \code{biased},
@@ -22,6 +21,9 @@
 #' @return \code{convGLM} returns a dataframe containing coefficient estimates and corresponding standard errors
 #' for the outcome model
 #' @export
+#'
+#' @references “Adjustment for Biased Sampling Using NHANES Derived Propensity Weights.”
+#'  Bernstein, OM; Vegetabile, BG; Salazar, CR; Grill, JD; Gillen, DL. Under Revision \url{https://arxiv.org/abs/2104.10298}
 #'
 #' @examples
 #' data("mtcars")
