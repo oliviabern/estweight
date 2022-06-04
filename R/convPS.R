@@ -25,6 +25,7 @@
 #' standard error that is estimated using a simultaneous estimating equation that accounts
 #'  for uncertainty from the weight estimating and propensity score estimation process.
 #'
+#'
 #'  @references “Causal Inference in Convenience Samples.”
 #'  Bernstein, OM; Vegetabile, BG; Grill, JD; Gillen, DL. Forthcoming.
 #'
