@@ -3,3 +3,4 @@
 export(convGLM)
 export(estweight)
 export(logisticSE)
+export(treatmentSE)

@@ -1,15 +1,22 @@
-#' Title
+#' Standard error estimation for treatment effects estimated with convenience samples
 #'
-#' @param estwt_fit
-#' @param estprop_fit
-#' @param fit_outcome
-#' @param biased
-#' @param outcome_family
+#' Estimate standard errors with a simultaneous estimating equation approach for
+#' propensity adjusted estimates of a treatment effect when sampling weights are estimated
+#' using an auxiliary sample and the sampling weights are used to estimate the propensity score
+#' and the treatment effect
 #'
-#' @return
+#' @param estwt_fit A \code{glm} object from the sampling weight estimation
+#' @param estprop_fit A \code{svyglm} object from the propensity score estimation
+#' @param fit_outcome A \code{svyglm} object from the treatment effect estimation
+#' @param biased An indicator of biased sample membership
+#' @param outcome_family Error distribution and link function to be used in the outcome model
+#'  (See \code{family} for details of family function). Defaults to stats::gaussian
+#'
+#' @return Standard error estimates for treatment effect estimates that account for
+#' uncertainty in sampling-weight estimation, propensity score estimation, and
+#' estimating the treatment effect
 #' @export
 #'
-#' @examples
 treatmentSE = function(estwt_fit, estprop_fit, fit_outcome, biased, outcome_family){
 
   # check that the propensity score model was fit with svyglm
