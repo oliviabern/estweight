@@ -1,4 +1,25 @@
+#' Title
+#'
+#' @param estwt_fit
+#' @param estprop_fit
+#' @param fit_outcome
+#' @param biased
+#' @param outcome_family
+#'
+#' @return
+#' @export
+#'
+#' @examples
 treatmentSE = function(estwt_fit, estprop_fit, fit_outcome, biased, outcome_family){
+
+  # check that the propensity score model was fit with svyglm
+  if(estprop_fit$call[1]!="svyglm()"){
+    stop("The propensity score model (estprop_fit) must be fit with svyglm()")
+  }
+  # check that the outcome model was fit with svyglm
+  if(estprop_fit$call[1]!="svyglm()"){
+    stop("The outcome model (fit_outcome) must be fit with svyglm()")
+  }
 
   ## Get design matrices
   # sampling weight estimation

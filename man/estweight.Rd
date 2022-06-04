@@ -4,7 +4,12 @@
 \alias{estweight}
 \title{Estimate propensity weights for biased samples}
 \usage{
-estweight(data, weight_model = "logistic", incl_wts_for_rep = FALSE)
+estweight(
+  data,
+  weight_model = "logistic",
+  incl_wts_for_rep = FALSE,
+  return_model_fit = FALSE
+)
 }
 \arguments{
 \item{data}{Combined dataset including the convenience sample and representative sample with a subject
@@ -17,10 +22,16 @@ should either  be binary or of class factor}
 
 \item{incl_wts_for_rep}{A logical value indicating whether propensity weights for
 observations from the representative sample should be included in the output.}
+
+\item{return_model_fit}{An optional flag which changes the output so that it
+returns a list of estimated propensity weights and the model fit. This is useful for downstream
+uncertainty estimates. Note that a model fit is only returned if a logistic propensity weight
+estimation model is selected (weight_model == "logistic")}
 }
 \value{
 \code{estweight} returns a dataframe containing IDs and the corresponding estimated
-propensity weights
+propensity weights. If the flag return_model_fit == TRUE and the weight_model == "logistic", it instead returns a list where the
+first element is the dataframe of IDS and weights and the second element is the model fit.
 }
 \description{
 Estimate propensity weights for biased samples using information from a representative sample.

@@ -1,5 +1,5 @@
 Package: estweight
-Title: Estimates Propensity Weights For Convenience Samples
+Title: Estimates Sampling Weights For Convenience Samples
 Version: 0.0.0.9000
 Authors@R: 
     person(given = "Olivia M.",
@@ -7,12 +7,12 @@ Authors@R:
            role = c("aut", "cre"),
            email = "obernste@uci.edu",
            comment = c(ORCID = "https://orcid.org/0000-0003-3345-4263"))
-Description: Convenience samples are often used to estimate associations but this may lead to unrepresenative estimates. This packages contains functions to estimate propensity weights for a convenience sample using information from a representative sample. The propensity weights are used to weight a GLM for the scientific question of inference to obtain more representative inference. 
+Description: Convenience samples are often used to estimate associations but this may lead to unrepresenative estimates. This packages contains functions to estimate sampling weights for a convenience sample using information from a representative sample. The sampling weights are used to weight a GLM for the scientific question of inference to obtain more representative inference. The sampling weights are also used to estimate propensity scores and propensity score weighted treatment effects.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.1.1
+RoxygenNote: 7.1.2
 Imports: 
     randomForest,
     CBPS,
