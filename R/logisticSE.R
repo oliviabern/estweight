@@ -17,8 +17,8 @@ logisticSE = function(estwt_fit, fit_outcome, biased){
 
   ## I_UU
   mu = stats::fitted(fit_outcome)
-  V_mu = (residuals(fit_outcome,"response")/residuals(fit_outcome,"pearson"))^2 #
-  dmu_deta = residuals(fit_outcome,"response")/residuals(fit_outcome,"working")
+  V_mu = (stats::residuals(fit_outcome,"response")/stats::residuals(fit_outcome,"pearson"))^2 #
+  dmu_deta = stats::residuals(fit_outcome,"response")/stats::residuals(fit_outcome,"working")
   X = stats::model.matrix(fit_outcome)
   pi = 1/fit_outcome$survey.design$prob
   pi = pi/sum(pi)*length(pi)
@@ -27,7 +27,7 @@ logisticSE = function(estwt_fit, fit_outcome, biased){
   ##  I_UT
   # subset W down to subjects from biased sample
   W = stats::model.matrix(estwt_fit)[as.logical(biased),]
-  y_mu = residuals(fit_outcome, type = 'response')
+  y_mu = stats::residuals(fit_outcome, type = 'response')
   I_UT = t(X)%*%(pi*diag(dmu_deta*y_mu/V_mu)%*%W)
 
   ## T

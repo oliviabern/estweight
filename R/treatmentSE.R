@@ -1,4 +1,4 @@
-treatmentSE = function(estwt_fit, estprop_fit, fit_outcome, biased){
+treatmentSE = function(estwt_fit, estprop_fit, fit_outcome, biased, outcome_family){
 
   ## Get design matrices
   # sampling weight estimation
@@ -39,8 +39,8 @@ treatmentSE = function(estwt_fit, estprop_fit, fit_outcome, biased){
 
   ## I_UU
   mu = stats::fitted(fit_outcome)
-  V_mu = (residuals(fit_outcome,"response")/residuals(fit_outcome,"pearson"))^2 #
-  dmudeta = residuals(fit_outcome,"response")/residuals(fit_outcome,"working")
+  V_mu = (stats::residuals(fit_outcome,"response")/stats::residuals(fit_outcome,"pearson"))^2 #
+  dmudeta = stats::residuals(fit_outcome,"response")/stats::residuals(fit_outcome,"working")
   I_UU = t(X3)%*%(diag(w/V_mu*(dmudeta)^{2})%*%X3)
 
   # # these match...
@@ -52,12 +52,12 @@ treatmentSE = function(estwt_fit, estprop_fit, fit_outcome, biased){
   ##  I_ST
   # subset X1 down to subjects from biased sample
   X1.conv = X1[biased==1,]#X1[as.logical(biased),] # updated 1/11/22 OB
-  a_e = residuals(estprop_fit, type = 'response')
+  a_e = stats::residuals(estprop_fit, type = 'response')
   I_ST = t(X2)%*%(diag(w*(a_e))%*%X1.conv)
 
   ## I_US
   beta2 = fit_outcome$coefficients["propscore"]
-  y_mu = residuals(fit_outcome, type = "response")
+  y_mu = stats::residuals(fit_outcome, type = "response")
 
   # Get d/dmu (V(mu))
 
