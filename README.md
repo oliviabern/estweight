@@ -216,6 +216,7 @@ convGLM(data = Xfit, outcome_formula = form.outcome, response = response,
 If you want to estimate sampling weights and use them in your own
 downstream analysis, you can use the estweight function. It will return
 sampling weights that you can use in any model that allows for sampling
+weights such as functions from the survey package. Note that the
 standard errors returned from these methods won’t account for
 uncertainty from estimating the sampling weights. To illustrate
 estimating sampling weights, we will use the simulated data from above.
