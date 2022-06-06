@@ -22,7 +22,9 @@
 #' @param outcome_family Error distribution and link function for the response variable. Defaults to a gaussian distribution with an identity link. (See
 #' \code{family} for details of family function)
 #'
-#' @return
+#' @return \code{convPS} returns a list containing the estimated treatment effect
+#' (Treatment_effect_est) and corresponding standard error (Treatment_effect_SE)
+#' that accounts for uncertainty from estimating the sampling weights and propensity scores
 #' @export
 #'
 #' @details Sampling weights are estimated for the
@@ -40,6 +42,8 @@
 #'  Bernstein, OM; Vegetabile, BG; Grill, JD; Gillen, DL. Forthcoming.
 #'
 #' @examples
+#'
+#'
 convPS = function(convSamp, repSamp,
                   sampwt_vars, PS_vars,
                   treatment_var, response_var,
