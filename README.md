@@ -4,30 +4,20 @@
 # estweight
 
 <!-- badges: start -->
-
 <!-- badges: end -->
 
-The goal of estweight is to estimate propensity weights for convenience
+The goal of estweight is to estimate sampling weights for convenience
 samples using information from a representative sample. The estimated
-weights are incorporated into propensity-weighted generalized linear
-models and analytic standard error estimates are reported. When using a
-logistic propensity weight estimation method, standard errors are
-derived using a simultaneous estimating equation approach to account for
-uncertianty from the weight estimation process. Otherwise standard
-errors are design-based.
-
-Suppose you want to estimate a model η(Y) = Xβ where Y is the response,
-X is a matrix containing covariates and η is a link function. However, Y
-and X were only collected in a convenience sample. Fitting the model
-directly in the convenience sample may lead to bias from the
-unrepresentative sampling. Additionally, supppose you have a second
-dataset that is representative of the target population you want to
-obtain inference about, but it does not contain both Y and X. The
-represerntative sample can be used to estimate sampling weights for the
-convenience sample adn these derirved weights can be used to weight the
-outcome model of interest. This package uses a representative sample to
-estimate weights for the convenience sample and weight the outcome model
-of interest using the convenience sample.
+weights are applied in various applications to obtain more generalizable
+inference. First, estimated sampling weights are incorporated into
+weighted generalized linear models to estimate associations for a target
+population and analytic standard error estimates are reported. Second,
+estimated weights are used to isolate causal effects with propensity
+scores for a target population. This package provides analytic standard
+error (SE) estimates in both contexts that account for uncertainty from
+estimating the sampling weights and when using propensity scores, the SE
+estimates accounts for uncertainty from estimating the propensity
+scores.
 
 ## Installation
 
@@ -39,7 +29,20 @@ You can install the development version of estweight from
 devtools::install_github("oliviabern/estweight")
 ```
 
-## Example
+## Example of weighting a GLM for generalizable inference: the convGLM() function
+
+Suppose you want to estimate a model η(Y) = Xβ where Y is the response,
+X is a matrix containing covariates and η is a link function. However, Y
+and X were only collected in a convenience sample. Fitting the model
+directly in the convenience sample may lead to bias from the
+unrepresentative sampling. Additionally, supppose you have a second
+dataset that is representative of the target population you want to
+obtain inference about, but it does not contain both Y and X. The
+representative sample can be used to estimate sampling weights for the
+convenience sample and these derived weights can be used to weight the
+outcome model of interest. This package uses a representative sample to
+estimate weights for the convenience sample and weight the outcome model
+of interest using the convenience sample.
 
 This is a basic example which shows you how to use a representative
 sample to estimate propensity weights and fit a weighted GLM for a
@@ -160,14 +163,13 @@ form.outcome = as.formula(y ~ X4 + X5 + X6)
 convGLM(data = Xfit, outcome_formula = form.outcome, response = response,
         weight_model = "logistic", outcome_family = "quasibinomial")
 #>                  coef analyticSE
-#> (Intercept) 0.3695812  0.1110329
-#> X41         1.5897785  0.4284810
-#> X51         1.1122235  0.4648974
-#> X61         0.3366221  0.3162072
+#> (Intercept) 0.3695812  0.1111605
+#> X41         1.5897785  0.4258854
+#> X51         1.1122235  0.4653186
+#> X61         0.3366221  0.3161996
 ```
 
-Use a random forest propensity weight estimation method
-instead.
+Use a random forest propensity weight estimation method instead.
 
 ``` r
 # fit weighted model using a random forest propensity weight estimation method
@@ -180,8 +182,7 @@ convGLM(data = Xfit, outcome_formula = form.outcome, response = response,
 #> X61         0.03364452  0.3847607
 ```
 
-Now try a covariate balancing propensity score weight estimation
-method.
+Now try a covariate balancing propensity score weight estimation method.
 
 ``` r
 # fit weighted model using a random forest propensity weight estimation method
@@ -195,8 +196,7 @@ convGLM(data = Xfit, outcome_formula = form.outcome, response = response,
 #> X61         0.3098333  0.3172941
 ```
 
-Finally, try a entropy balancing weight estimation
-method.
+Finally, try a entropy balancing weight estimation method.
 
 ``` r
 # fit weighted model using a random forest propensity weight estimation method
@@ -210,3 +210,18 @@ convGLM(data = Xfit, outcome_formula = form.outcome, response = response,
 #> X51         1.1122146  0.4694176
 #> X61         0.3191363  0.3193139
 ```
+
+## Example of using sampling weights to isolate causal effects with propensity adjustment: the convPS() function
+
+Now suppose that you want to use your convenience sample to estimate
+propensity scores and estimate a propensity score adjusted estimate of a
+treatment effect. We can again use a representative sample to estimate
+sampling weights, but the sampling weights should be used to (1)
+estimate the propensity score and (2) estimate the propensity-adjusted
+causal effect.
+
+Let’s simulation a super population where the sampling is dependent on a
+variable K, but we have not measured K. Instead, we have measured a
+proxy for K, X_1. Both K and X_1 are binary covariates, but they are
+functions of continuous latent variables which have a correlation of
+0.90.
