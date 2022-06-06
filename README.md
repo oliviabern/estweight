@@ -211,6 +211,27 @@ convGLM(data = Xfit, outcome_formula = form.outcome, response = response,
 #> X61         0.3191363  0.3193139
 ```
 
+## Estimating sampling weights only: the estweight() function
+
+If you want to estimate sampling weights and use them in your own
+downstream analysis, you can use the estweight function. It will return
+sampling weights that you can use in any model that allows for sampling
+standard errors returned from these methods won’t account for
+uncertainty from estimating the sampling weights. To illustrate
+estimating sampling weights, we will use the simulated data from above.
+
+``` r
+weights = estweight(data = Xfit, weight_model = "logistic")
+head(weights)
+#>       ID     htweight
+#> 46267  1 0.0007810555
+#> 2230   2 0.0014069895
+#> 13812  3 0.0005241307
+#> 16025  4 0.0014827449
+#> 46457  5 0.0011350264
+#> 20468  6 0.0007226848
+```
+
 ## Example of using sampling weights to isolate causal effects with propensity adjustment: the convPS() function
 
 Now suppose that you want to use your convenience sample to estimate
@@ -225,3 +246,83 @@ variable K, but we have not measured K. Instead, we have measured a
 proxy for K, X_1. Both K and X_1 are binary covariates, but they are
 functions of continuous latent variables which have a correlation of
 0.90.
+
+``` r
+library(MASS)
+
+n.pop = 10000; n = 2000
+
+Sigma = matrix(c(1,.9,.9,1),nrow = 2)
+cont = mvrnorm(n.pop, mu = c(0,0), Sigma = Sigma)
+
+K.full = ifelse(cont[,1] > 0, 1, 0)
+x1.full = ifelse(cont[,2] > 0, 1, 0)
+
+prob.sample = .6*K.full + .2
+```
+
+We start by drawing a convenience sample according to the sampling
+probability:
+
+``` r
+CSamp = sample(1:n.pop, size = n, prob = prob.sample)
+x1.c = x1.full[CSamp]
+K.c = K.full[CSamp]
+```
+
+Then draw a simple random sample (SRS):
+
+``` r
+SRS = sample(1:n.pop, size = n)
+x1.s = x1.full[SRS]
+K.s = K.full[SRS]
+```
+
+Next, we simulate more variables for the convenience sample including
+potential confounders, the probability of being in the treatment group,
+and the treatment indicators. Notice that the probability of receiving
+treatment is differential for individuals with K = 1 or K = 0.
+
+``` r
+x2.c = rnorm(n,0,2)
+x3.c = rnorm(n,0,2)
+pi.c = expit((log(1.3)*x2.c + log(.4)*x3.c)*(1-K.c) +
+(log(2)*x2.c + log(1.5)*x3.c)*(K.c))
+T.c = rbinom(n,1,pi.c)
+```
+
+Lastly, we simulate a response with treatment effect modification by K:
+
+``` r
+x4.c = rnorm(n,0,1)
+x5.c = rnorm(n,0,1)
+y.c = rnorm(n, mean = (0 + 1*T.c + 3*T.c*K.c + 1.5*x2.c - 2*x3.c^2 - 1*x4.c + 1.5*x5.c^3), sd = 1)
+```
+
+We can then format the convenience and representative samples to use the
+convPS() function:
+
+``` r
+convSamp = data.frame(x1 = x1.c, x2 = x2.c, x3 = x3.c,
+ x4 = x4.c, x5 = x5.c, Tx = T.c, y = y.c)
+ 
+repSamp = data.frame(x1 = x1.s)
+```
+
+Now, we get estimate the propensity adjusted causal effect and account
+for the sampling scheme:
+
+``` r
+convPS(convSamp = convSamp, repSamp = repSamp,
+       sampwt_vars = "x1", PS_vars = paste0("x",1:4),
+       treatment_var = "Tx", response_var = "y")
+#> $Treatment_effect_est
+#> [1] 2.531667
+#> 
+#> $Treatment_effect_SE
+#> [1] 0.6746462
+```
+
+Which returns the estimated causal effect and corresponding standard
+error that accounts for uncertainty from estimating the sampling weights
+and propensity score.
