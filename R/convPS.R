@@ -77,7 +77,7 @@
 #'
 #'convPS(convSamp = convSamp, repSamp = repSamp,
 #'sampwt_vars = "x1", PS_vars = paste0("x",1:4),
-#'treatment_var = "Tx", response_var = "y",)
+#'treatment_var = "Tx", response_var = "y")
 #'
 convPS = function(convSamp, repSamp,
                   sampwt_vars, PS_vars,

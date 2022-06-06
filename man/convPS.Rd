@@ -65,8 +65,7 @@ Bernstein, OM; Vegetabile, BG; Grill, JD; Gillen, DL. Forthcoming.
 }
 \examples{
 # Simulated a convenience sample and a representative sample
-expit <- function(x){exp(x)/(1+exp(x))}
-logit = function(x){log(x/(1-x))}
+expit = function(x){exp(x)/(1+exp(x))}
 n.pop = 10000; n = 2000
 
 Sigma = matrix(c(1,.9,.9,1),nrow = 2)
