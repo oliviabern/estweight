@@ -18,7 +18,8 @@ Imports:
     CBPS,
     entbal,
     survey,
-    stats
+    stats,
+    MASS
 Suggests: 
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
