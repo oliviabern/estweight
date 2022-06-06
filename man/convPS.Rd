@@ -40,7 +40,9 @@ should be present in the convenience sample (convSamp).}
 \code{family} for details of family function)}
 }
 \value{
-
+\code{convPS} returns a list containing the estimated treatment effect
+(Treatment_effect_est) and corresponding standard error (Treatment_effect_SE)
+that accounts for uncertainty from estimating the sampling weights and propensity scores
 }
 \description{
 Propensity adjusted causal effects are estimated for convenience samples and
@@ -60,4 +62,44 @@ for uncertainty from the weight estimating and propensity score estimation proce
 
 @references “Causal Inference in Convenience Samples.”
 Bernstein, OM; Vegetabile, BG; Grill, JD; Gillen, DL. Forthcoming.
+}
+\examples{
+# Simulated a convenience sample and a representative sample
+expit <- function(x){exp(x)/(1+exp(x))}
+logit = function(x){log(x/(1-x))}
+n.pop = 10000; n = 2000
+
+Sigma = matrix(c(1,.9,.9,1),nrow = 2)
+cont = MASS::mvrnorm(n.pop, mu = c(0,0), Sigma = Sigma)
+K.full = ifelse(cont[,1] > 0, 1, 0)
+x1.full = ifelse(cont[,2] > 0, 1, 0)
+prob.sample = .6*K.full + .2
+
+# get convenince sample
+CSamp = sample(1:n.pop, size = n, prob = prob.sample)
+x1.b = x1.full[CSamp]
+K.b = K.full[CSamp]
+
+# get simple random sample (SRS)
+SRS = sample(1:n.pop, size = n)
+x1.s = x1.full[SRS]
+K.s = K.full[SRS]
+
+# get remaining covariates for biased sample
+x2.b = rnorm(n,0,2)
+x3.b = rnorm(n,0,2)
+pi.b = expit((log(1.3)*x2.b + log(.4)*x3.b)*(1-K.b) +
+(log(2)*x2.b + log(1.5)*x3.b)*(K.b))
+T.b = rbinom(n,1,pi.b)
+x4.b = rnorm(n,0,1)
+x5.b = rnorm(n,0,1)
+y.b = rnorm(n, mean = (0 + 1*T.b + 3*T.b*K.b + 1.5*x2.b - 2*x3.b^2 - 1*x4.b + 1.5*x5.b^3), sd = 1)
+convSamp = data.frame(x1 = x1.b, x2 = x2.b, x3 = x3.b,
+ x4 = x4.b, x5 = x5.b, Tx = T.b, y = y.b)
+ repSamp = data.frame(x1 = x1.s)
+
+convPS(convSamp = convSamp, repSamp = repSamp,
+sampwt_vars = "x1", PS_vars = paste0("x",1:4),
+treatment_var = "Tx", response_var = "y",)
+
 }
