@@ -15,7 +15,7 @@
 #' @param response A matrix containing two columns: \code{ID} and \code{response} which is the response for outcome_formula
 #' @param weight_model Which propensity weight estimation model should be used. Either \code{"logistic"},
 #' \code{"randomForest"}, \code{"CBPS"}, or \code{"entbal"}
-#' @param outcome_family Error distribution and link function to be used in the outcome model (See
+#' @param outcome_family Error distribution and link function to be used in the outcome model. Defaults to a gaussian distribution with an identity link. (See
 #' \code{family} for details of family function)
 #'
 #' @return \code{convGLM} returns a dataframe containing coefficient estimates and corresponding standard errors

@@ -25,7 +25,7 @@ should either  be binary or of class factor}
 \item{weight_model}{Which propensity weight estimation model should be used. Either \code{"logistic"},
 \code{"randomForest"}, \code{"CBPS"}, or \code{"entbal"}}
 
-\item{outcome_family}{Error distribution and link function to be used in the outcome model (See
+\item{outcome_family}{Error distribution and link function to be used in the outcome model. Defaults to a gaussian distribution with an identity link. (See
 \code{family} for details of family function)}
 }
 \value{

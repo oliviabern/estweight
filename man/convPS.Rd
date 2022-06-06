@@ -6,16 +6,38 @@
 \usage{
 convPS(
   convSamp,
-  SRS,
+  repSamp,
   sampwt_vars,
   PS_vars,
   treatment_var,
   response_var,
-  outcome_family = stats::gaussian
+  outcome_family = stats::gaussian(link = "identity")
 )
 }
 \arguments{
-\item{outcome_family}{}
+\item{convSamp}{Convenience sample stored as a data frame. It should contain variables for
+estimating the sampling weight, for estimating the propensity score, the treatment variable, and the response variable.
+Note that all factors in the dataset should either be binary or of class factor.}
+
+\item{repSamp}{Representative sample stored as a data frame. It should contain variables for
+estimating the sampling weight. The variables for estimating the sampling weight should be named
+the same as they are in the convenience sample (convSamp).
+Note that all factors in the dataset should either be binary or of class factor.}
+
+\item{sampwt_vars}{A vector of column names used for estimating the sampling weights. These variables
+should be present in both the convenience sample (convSamp) and the representative sample (repSamp).}
+
+\item{PS_vars}{A vector of column names used for estimating the sampling weights. These variables
+should be present in the convenience sample (convSamp).}
+
+\item{treatment_var}{The column name for the treatment variable. This variable
+should be present in the convenience sample (convSamp).}
+
+\item{response_var}{The column name for the response variable. This variable
+should be present in the convenience sample (convSamp).}
+
+\item{outcome_family}{Error distribution and link function for the response variable. Defaults to a gaussian distribution with an identity link. (See
+\code{family} for details of family function)}
 }
 \value{
 
