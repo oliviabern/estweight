@@ -54,8 +54,8 @@
 #'
 #'# get convenince sample
 #'CSamp = sample(1:n.pop, size = n, prob = prob.sample)
-#'x1.b = x1.full[CSamp]
-#'K.b = K.full[CSamp]
+#'x1.c = x1.full[CSamp]
+#'K.c = K.full[CSamp]
 #'
 #'# get simple random sample (SRS)
 #'SRS = sample(1:n.pop, size = n)
@@ -63,16 +63,16 @@
 #'K.s = K.full[SRS]
 #'
 #'# get remaining covariates for biased sample
-#'x2.b = rnorm(n,0,2)
-#'x3.b = rnorm(n,0,2)
-#'pi.b = expit((log(1.3)*x2.b + log(.4)*x3.b)*(1-K.b) +
-#' (log(2)*x2.b + log(1.5)*x3.b)*(K.b))
-#' T.b = rbinom(n,1,pi.b)
-#' x4.b = rnorm(n,0,1)
-#' x5.b = rnorm(n,0,1)
-#' y.b = rnorm(n, mean = (0 + 1*T.b + 3*T.b*K.b + 1.5*x2.b - 2*x3.b^2 - 1*x4.b + 1.5*x5.b^3), sd = 1)
-#' convSamp = data.frame(x1 = x1.b, x2 = x2.b, x3 = x3.b,
-#'  x4 = x4.b, x5 = x5.b, Tx = T.b, y = y.b)
+#'x2.c = rnorm(n,0,2)
+#'x3.c = rnorm(n,0,2)
+#'pi.c = expit((log(1.3)*x2.c + log(.4)*x3.c)*(1-K.c) +
+#' (log(2)*x2.c + log(1.5)*x3.c)*(K.c))
+#' T.c = rbinom(n,1,pi.c)
+#' x4.c = rnorm(n,0,1)
+#' x5.c = rnorm(n,0,1)
+#' y.c = rnorm(n, mean = (0 + 1*T.c + 3*T.c*K.c + 1.5*x2.c - 2*x3.c^2 - 1*x4.c + 1.5*x5.c^3), sd = 1)
+#' convSamp = data.frame(x1 = x1.c, x2 = x2.c, x3 = x3.c,
+#'  x4 = x4.c, x5 = x5.c, Tx = T.c, y = y.c)
 #'  repSamp = data.frame(x1 = x1.s)
 #'
 #'convPS(convSamp = convSamp, repSamp = repSamp,
