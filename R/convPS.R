@@ -82,7 +82,7 @@
 convPS = function(convSamp, repSamp,
                   sampwt_vars, PS_vars,
                   treatment_var, response_var,
-                  outcome_family = stats::gaussian(link = "identity")){
+                  outcome_family = stats::gaussian){
 
 
   #### check function inputs ####

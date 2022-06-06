@@ -99,6 +99,6 @@ convSamp = data.frame(x1 = x1.b, x2 = x2.b, x3 = x3.b,
 
 convPS(convSamp = convSamp, repSamp = repSamp,
 sampwt_vars = "x1", PS_vars = paste0("x",1:4),
-treatment_var = "Tx", response_var = "y",)
+treatment_var = "Tx", response_var = "y")
 
 }
