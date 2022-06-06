@@ -3,7 +3,7 @@ Title: Estimates Sampling Weights For Convenience Samples
 Version: 0.0.0.9000
 Authors@R: 
     person(given = "Olivia M.",
-           family = "Bernstein",
+           family = "Bernstein Morgan",
            role = c("aut", "cre"),
            email = "obernste@uci.edu",
            comment = c(ORCID = "https://orcid.org/0000-0003-3345-4263"))

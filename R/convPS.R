@@ -37,7 +37,6 @@
 #' standard error that is estimated using a simultaneous estimating equation that accounts
 #'  for uncertainty from the weight estimating and propensity score estimation process.
 #'
-#'
 #'  @references “Causal Inference in Convenience Samples.”
 #'  Bernstein, OM; Vegetabile, BG; Grill, JD; Gillen, DL. Forthcoming.
 #'
@@ -78,6 +77,8 @@
 #'convPS(convSamp = convSamp, repSamp = repSamp,
 #'sampwt_vars = "x1", PS_vars = paste0("x",1:4),
 #'treatment_var = "Tx", response_var = "y")
+#'
+#' @importFrom survey svyglm
 #'
 convPS = function(convSamp, repSamp,
                   sampwt_vars, PS_vars,

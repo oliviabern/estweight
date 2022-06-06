@@ -11,7 +11,7 @@ convPS(
   PS_vars,
   treatment_var,
   response_var,
-  outcome_family = stats::gaussian(link = "identity")
+  outcome_family = stats::gaussian
 )
 }
 \arguments{
