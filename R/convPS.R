@@ -189,7 +189,7 @@ convPS = function(convSamp, repSamp,
                              biased = Xfit$biased,
                              outcome_family = outcome_family)
 
-  out = list(Treatment_effect_est = coef.save[2],
+  out = list(Treatment_effect_est = coef.save[2][[1]],
              Treatment_effect_SE = se.prop.save[2])
 
   return(out)

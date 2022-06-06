@@ -50,7 +50,7 @@
 #'
 #' # Fit weighted model
 #' convGLM(data = Xfit, outcome_formula = as.formula(y ~ mpg + cyl), response = response,
-#' weight_model = "randomForest",outcome_family = "quasibinomial")
+#' weight_model = "randomForest",outcome_family = stats::quasibinomial)
 #'
 #' # Fit unweighted model
 #' glm(vs ~ mpg + cyl, data = Xcomb, subset = (Xcomb$biased == 1), family = binomial)$coef

@@ -19,6 +19,14 @@
 #'
 treatmentSE = function(estwt_fit, estprop_fit, fit_outcome, biased, outcome_family){
 
+  if(is.function(outcome_family)){
+    family = outcome_family()$family
+    link = outcome_family()$link
+  } else{
+    family = outcome_family$family
+    link = outcome_family$link
+  }
+
   # check that the propensity score model was fit with svyglm
   if(estprop_fit$call[1]!="svyglm()"){
     stop("The propensity score model (estprop_fit) must be fit with svyglm()")
@@ -89,22 +97,22 @@ treatmentSE = function(estwt_fit, estprop_fit, fit_outcome, biased, outcome_fami
 
   # Get d/dmu (V(mu))
 
-  if(outcome_family()$family == "gaussian"){
+  if(family == "gaussian"){
     dVdmu = rep(0, length(mu))
-  } else if(outcome_family()$family %in% c("binomial", "quasibinomial")){
+  } else if(family %in% c("binomial", "quasibinomial")){
     dVdmu = (1-2*mu)
-  } else if(outcome_family()$family %in% c("poisson", "quasipoisson")){
+  } else if(family %in% c("poisson", "quasipoisson")){
     dVdmu = rep(1, length(mu))
   } else{
     stop("outcome_family must be gaussian, binomial, quasibinomial, poisson, or quasipoisson")
   }
 
   # get d/dmu (dmu/deta)
-  if(outcome_family()$link == "identity"){
+  if(link == "identity"){
     ddmu_dmudeta = rep(0, length(mu))
-  } else if(outcome_family()$link == "logit"){
+  } else if(link == "logit"){
     ddmu_dmudeta = (1-2*mu)
-  } else if(outcome_family()$link == "log"){
+  } else if(link == "log"){
     ddmu_dmudeta = rep(1, length(mu))
   } else{
     stop("link function must be identity, log, or logit")
