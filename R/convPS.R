@@ -42,11 +42,12 @@
 #'
 #' @examples
 #'# Simulated a convenience sample and a representative sample
+#'require(MASS)
 #'expit = function(x){exp(x)/(1+exp(x))}
 #'n.pop = 10000; n = 2000
 #'
 #'Sigma = matrix(c(1,.9,.9,1),nrow = 2)
-#'cont = MASS::mvrnorm(n.pop, mu = c(0,0), Sigma = Sigma)
+#'cont = mvrnorm(n.pop, mu = c(0,0), Sigma = Sigma)
 #'K.full = ifelse(cont[,1] > 0, 1, 0)
 #'x1.full = ifelse(cont[,2] > 0, 1, 0)
 #'prob.sample = .6*K.full + .2
