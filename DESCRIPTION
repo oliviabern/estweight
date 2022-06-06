@@ -1,6 +1,6 @@
 Package: estweight
 Title: Estimates Sampling Weights For Convenience Samples
-Version: 0.0.0.9000
+Version: 0.0.1.0
 Authors@R: 
     person(given = "Olivia M.",
            family = "Bernstein Morgan",
