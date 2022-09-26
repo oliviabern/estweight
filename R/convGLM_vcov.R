@@ -1,7 +1,8 @@
 #' Variance covariance matrix for propensity-weighted generalized linear models with logistic weight estimation
 #'
 #' Estimate covariance matrix with a simultaneous estimating equation approach for a propensity-weighted generalized linear model
-#' when weights are estimated via logistic regression
+#' when weights are estimated via logistic regression. Note that this is the same as logisticSE() but
+#' it returns the covariance matrix instead of standard errors.
 #'
 #' @param estwt_fit A \code{glm} object from the propensity weight estimation
 #' @param fit_outcome A \code{glm} object from the final outcome model
